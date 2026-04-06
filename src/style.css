@@ -1,0 +1,4 @@
+body { margin:0; background:black; color:white; font-family: serif; }
+canvas { position:fixed; inset:0; }
+.page { position:relative; padding:6vh 6vw; }
+.initial { position:absolute; font-size:20vw; opacity:0.9; }
