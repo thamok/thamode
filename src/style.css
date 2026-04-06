@@ -1,8 +1,11 @@
-body{margin:0;background:#000;color:#fff;font-family:Georgia,serif;overflow:hidden}
-canvas{position:fixed;inset:0}
-.page{position:relative;padding:8vh 6vw}
-.initial{position:absolute;font-size:18vw;letter-spacing:-0.05em}
-.content{position:relative;max-width:600px;margin-left:8vw}
-h1{font-size:4vw;line-height:.95}
-p{opacity:.8}
-.links a{margin-right:1rem;color:white;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
+body{margin:0;background:#000;color:#fff;font-family:Georgia,"Times New Roman",serif;overflow:hidden}
+canvas{position:fixed;inset:0;display:block}
+.page{position:relative;z-index:1;min-height:100vh;padding:7vh 6vw;pointer-events:none}
+.initial{position:absolute;left:0;top:-.08em;font-size:clamp(7rem,18vw,16rem);line-height:.82;letter-spacing:-.07em;color:rgba(255,255,255,.98);text-shadow:0 0 32px rgba(255,255,255,.06);user-select:none}
+.content{position:relative;max-width:40rem;margin-left:clamp(3.6rem,8vw,7rem);padding-top:clamp(2.1rem,4vw,3.8rem)}
+h1{margin:0;font-size:clamp(2.2rem,4.6vw,4.5rem);line-height:.92;letter-spacing:-.04em;max-width:12ch}
+p{margin:1.2rem 0 0;max-width:30rem;opacity:.82;font-size:clamp(1rem,1.3vw,1.12rem);line-height:1.55}
+.links{margin-top:1.5rem;display:flex;gap:1.15rem;flex-wrap:wrap;pointer-events:auto}
+.links a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:.12rem;transition:border-color .12s ease,opacity .12s ease,transform .12s ease}
+.links a:hover{opacity:.94;border-color:rgba(255,255,255,.7);transform:translateY(-1px)}
+@media (max-width:700px){.page{padding:6vh 1.2rem}.initial{font-size:clamp(5.4rem,25vw,9rem)}.content{margin-left:3rem;padding-top:2.1rem}h1{max-width:none}}
