@@ -1,7 +1,8 @@
-body{margin:0;background:#000;color:#fff;font-family:Georgia,serif}
+body{margin:0;background:#000;color:#fff;font-family:Georgia,serif;overflow:hidden}
 canvas{position:fixed;inset:0}
 .page{position:relative;padding:8vh 6vw}
 .initial{position:absolute;font-size:18vw;letter-spacing:-0.05em}
-h1{font-size:4vw;max-width:12ch;line-height:0.95}
-.about{opacity:.8;max-width:28rem}
+.content{position:relative;max-width:600px;margin-left:8vw}
+h1{font-size:4vw;line-height:.95}
+p{opacity:.8}
 .links a{margin-right:1rem;color:white;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
