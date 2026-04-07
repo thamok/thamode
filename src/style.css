@@ -1,84 +1,105 @@
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: Georgia, "Times New Roman", serif;
-  overflow: hidden;
-}
-canvas {
-  position: fixed;
-  inset: 0;
-  display: block;
-}
-.page {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  padding: 7vh 6vw;
-  pointer-events: none;
-}
-.initial {
-  position: absolute;
-  left: 0;
-  top: -0.08em;
-  font-size: clamp(7rem, 18vw, 16rem);
-  line-height: 0.82;
-  letter-spacing: -0.07em;
-  color: rgba(255, 255, 255, 0.98);
-  text-shadow: 0 0 32px rgba(255, 255, 255, 0.06);
-  user-select: none;
-}
-.content {
-  position: relative;
-  max-width: 40rem;
-  margin-left: clamp(3.6rem, 8vw, 7rem);
-  padding-top: clamp(2.1rem, 4vw, 3.8rem);
-}
-h1 {
-  margin: 0;
-  font-size: clamp(2.2rem, 4.6vw, 4.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.04em;
-  max-width: 12ch;
-}
-p {
-  margin: 1.2rem 0 0;
-  max-width: 30rem;
-  opacity: 0.82;
-  font-size: clamp(1rem, 1.3vw, 1.12rem);
-  line-height: 1.55;
-}
-.links {
-  margin-top: 1.5rem;
-  display: flex;
-  gap: 1.15rem;
-  flex-wrap: wrap;
-  pointer-events: auto;
-}
-.links a {
-  color: #fff;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-  padding-bottom: 0.12rem;
-  transition: border-color 0.12s ease, opacity 0.12s ease, transform 0.12s ease;
-}
-.links a:hover {
-  opacity: 0.94;
-  border-color: rgba(255, 255, 255, 0.7);
-  transform: translateY(-1px);
-}
-@media (max-width: 700px) {
-  .page {
-    padding: 6vh 1.2rem;
-  }
-  .initial {
-    font-size: clamp(5.4rem, 25vw, 9rem);
-  }
-  .content {
-    margin-left: 3rem;
-    padding-top: 2.1rem;
-  }
-  h1 {
-    max-width: none;
-  }
-}
+      @font-face {
+            font-family: 'Monaspace Neon';
+            src: url('https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.000/fonts/otf/MonaspaceNeon-Regular.otf');
+            font-weight: normal;
+        }
+
+        :root {
+            --bg: #030303;
+            --text: #ffffff;
+            --accent: #3a86ff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Monaspace Neon', monospace;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            image-rendering: pixelated;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10vw;
+        }
+
+        .ui-box {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0 0 1.5rem 0;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        p {
+            line-height: 1.7;
+            opacity: 0.7;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+            pointer-events: auto;
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            border-color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.6rem;
+            opacity: 0.3;
+            pointer-events: none;
+        }
