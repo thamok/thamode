@@ -1,105 +1,166 @@
 import './style.css';
 
-const canvas = document.getElementById('smoke') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
+    <script>
+        /**
+         * Pretext-style Fluid Solver
+         * Implements Advection, Diffusion, and Projection
+         */
+        const canvas = document.getElementById('pretext-canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
 
-let mouse = { x: 0, y: 0, active: false };
-let ripples: { x: number; y: number; t: number }[] = [];
+        const RESOLUTION = 4; // Smaller = higher quality
+        let width, height, cols, rows;
+        
+        let density, velocityX, velocityY, prevDensity;
+        let mouse = { x: 0, y: 0, px: 0, py: 0, active: false };
+        let rotation = 0;
 
-function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
-resize();
-addEventListener('resize', resize);
+        function init() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
 
-addEventListener('mousemove', (e) => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-  mouse.active = true;
-});
+            cols = Math.ceil(width / RESOLUTION);
+            rows = Math.ceil(height / RESOLUTION);
 
-addEventListener('touchmove', (e) => {
-  mouse.x = e.touches[0].clientX;
-  mouse.y = e.touches[0].clientY;
-  mouse.active = true;
-});
+            density = new Float32Array(cols * rows);
+            prevDensity = new Float32Array(cols * rows);
+            velocityX = new Float32Array(cols * rows);
+            velocityY = new Float32Array(cols * rows);
+            
+            ctx.fillStyle = '#030303';
+            ctx.fillRect(0, 0, width, height);
+        }
 
-addEventListener('click', (e) => {
-  ripples.push({ x: e.clientX, y: e.clientY, t: 0 });
-});
+        window.addEventListener('resize', init);
+        init();
 
-// pseudo velocity buffer
-let prevField: Float32Array | null = null;
+        const handleInput = (x, y) => {
+            mouse.px = mouse.x;
+            mouse.py = mouse.y;
+            mouse.x = x;
+            mouse.y = y;
+            mouse.active = true;
 
-function draw(time: number) {
-  const w = canvas.width;
-  const h = canvas.height;
+            const i = Math.floor(x / RESOLUTION);
+            const j = Math.floor(y / RESOLUTION);
+            
+            if (i > 0 && i < cols - 1 && j > 0 && j < rows - 1) {
+                const idx = j * cols + i;
+                density[idx] += 30;
+                velocityX[idx] += (mouse.x - mouse.px) * 0.4;
+                velocityY[idx] += (mouse.y - mouse.py) * 0.4;
+            }
+        };
 
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, w, h);
+        window.addEventListener('mousemove', e => handleInput(e.clientX, e.clientY));
+        window.addEventListener('touchmove', e => {
+            handleInput(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault();
+        }, { passive: false });
 
-  const field = new Float32Array(w * h);
+        // The "Spinning T" Logic
+        function drawSpinningT(time) {
+            rotation += 0.01;
+            const centerX = width * 0.7; // Positioned to the right
+            const centerY = height * 0.4;
+            const size = Math.min(width, height) * 0.15;
 
-  // approximate T center influence
-  const tCenterX = w * 0.18;
-  const tCenterY = h * 0.28;
+            // Generate "T" shape points and inject density/velocity
+            for (let a = -1; a <= 1; a += 0.1) {
+                // Top bar of T
+                const tx1 = centerX + (a * size) * Math.cos(rotation) - (size/2) * Math.sin(rotation);
+                const ty1 = centerY + (a * size) * Math.sin(rotation) + (size/2) * Math.cos(rotation);
+                injectForce(tx1, ty1, Math.cos(rotation) * 2, Math.sin(rotation) * 2);
 
-  for (let y = 0; y < h; y += 2) {
-    for (let x = 0; x < w; x += 2) {
-      const i = y * w + x;
+                // Vertical bar of T
+                const tx2 = centerX + (0) * Math.cos(rotation) - (a * size/2) * Math.sin(rotation);
+                const ty2 = centerY + (0) * Math.sin(rotation) + (a * size/2) * Math.cos(rotation);
+                injectForce(tx2, ty2, -Math.sin(rotation) * 2, Math.cos(rotation) * 2);
+            }
+        }
 
-      const dxM = x - mouse.x;
-      const dyM = y - mouse.y;
-      const distM = Math.hypot(dxM, dyM) || 1;
-      const mouseForce = mouse.active ? Math.max(0, 1 - distM / 260) : 0;
+        function injectForce(x, y, vx, vy) {
+            const i = Math.floor(x / RESOLUTION);
+            const j = Math.floor(y / RESOLUTION);
+            if (i > 0 && i < cols - 1 && j > 0 && j < rows - 1) {
+                const idx = j * cols + i;
+                density[idx] = Math.min(100, density[idx] + 2);
+                velocityX[idx] += vx;
+                velocityY[idx] += vy;
+            }
+        }
 
-      // T gravity
-      const dxT = x - tCenterX;
-      const dyT = y - tCenterY;
-      const distT = Math.hypot(dxT, dyT) || 1;
-      const tForce = Math.max(0, 1 - distT / 420);
+        function step() {
+            // Copy density to temp for advection
+            prevDensity.set(density);
 
-      const base = Math.sin(x * 0.002 + y * 0.002 + time * 0.00035);
+            for (let j = 1; j < rows - 1; j++) {
+                for (let i = 1; i < cols - 1; i++) {
+                    const idx = j * cols + i;
 
-      let flow = base + mouseForce * 1.1 + tForce * 0.6;
+                    // 1. Decay
+                    density[idx] *= 0.985;
+                    velocityX[idx] *= 0.98;
+                    velocityY[idx] *= 0.98;
 
-      for (let r of ripples) {
-        const rd = Math.hypot(x - r.x, y - r.y);
-        const wave = Math.sin(rd * 0.045 - r.t * 0.018);
-        flow += wave * 0.6 * Math.max(0, 1 - rd / 420);
-      }
+                    // 2. Advection (Semi-Lagrangian)
+                    const vx = velocityX[idx];
+                    const vy = velocityY[idx];
+                    
+                    if (Math.abs(vx) > 0.01 || Math.abs(vy) > 0.01) {
+                        const srcI = Math.max(0, Math.min(cols - 1, i - vx));
+                        const srcJ = Math.max(0, Math.min(rows - 1, j - vy));
+                        
+                        const srcIdx = Math.floor(srcJ) * cols + Math.floor(srcI);
+                        density[idx] = prevDensity[srcIdx] * 0.99;
+                    }
+                }
+            }
+        }
 
-      // inertia (previous frame influence)
-      if (prevField) {
-        flow = flow * 0.7 + prevField[i] * 0.3;
-      }
+        function render() {
+            // Instead of full clear, we could do trailing, 
+            // but for Navier-Stokes style, we redraw based on field
+            ctx.fillStyle = '#030303';
+            ctx.fillRect(0, 0, width, height);
 
-      field[i] = flow;
+            const imgData = ctx.createImageData(width, height);
+            const data = imgData.data;
 
-      const a = Math.pow(Math.abs(flow), 2.4);
+            for (let j = 0; j < rows; j++) {
+                for (let i = 0; i < cols; i++) {
+                    const d = density[j * cols + i];
+                    if (d < 0.1) continue;
 
-      const rC = 4 + a * 10;
-      const g = 10 + a * 24;
-      const b = 28 + a * 90;
+                    const brightness = Math.min(255, d * 15);
+                    
+                    // Map to a Pretext-style blue/white gradient
+                    const r = brightness * 0.3;
+                    const g = brightness * 0.5;
+                    const b = brightness;
 
-      ctx.fillStyle = `rgba(${rC},${g},${b},${a})`;
-      ctx.fillRect(x, y, 2, 2);
-    }
-  }
+                    // Drawing squares at resolution
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fillRect(i * RESOLUTION, j * RESOLUTION, RESOLUTION, RESOLUTION);
+                }
+            }
 
-  prevField = field;
+            // Film grain effect
+            for(let k = 0; k < 1000; k++) {
+                const gx = Math.random() * width;
+                const gy = Math.random() * height;
+                ctx.fillStyle = `rgba(255,255,255,0.03)`;
+                ctx.fillRect(gx, gy, 1, 1);
+            }
+        }
 
-  for (let r of ripples) r.t += 16;
-  ripples = ripples.filter((r) => r.t < 2200);
+        function frame(time) {
+            drawSpinningT(time);
+            step();
+            render();
+            requestAnimationFrame(frame);
+        }
 
-  // grain
-  for (let i = 0; i < 1800; i++) {
-    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.025})`;
-    ctx.fillRect(Math.random() * w, Math.random() * h, 1, 1);
-  }
-
-  requestAnimationFrame(draw);
-}
-
-requestAnimationFrame(draw);
+        requestAnimationFrame(frame);requestAnimationFrame(draw);
