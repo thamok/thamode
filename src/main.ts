@@ -1,10 +1,4 @@
 import './style.css';
-
-    <script>
-        /**
-         * Pretext-style Fluid Solver
-         * Implements Advection, Diffusion, and Projection
-         */
         const canvas = document.getElementById('pretext-canvas');
         const ctx = canvas.getContext('2d', { alpha: false });
 
