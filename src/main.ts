@@ -149,7 +149,8 @@ function measureTextWidth(text: string, font: string): number {
 
 function createGlyphSpan(glyph: string, index: number): HTMLSpanElement {
   const span = document.createElement("span");
-  span.className = glyph === " " ? "ascii-glyph ascii-glyph-space" : "ascii-glyph";
+  span.className =
+    glyph === " " ? "ascii-glyph ascii-glyph-space" : "ascii-glyph";
   span.textContent = glyph;
   span.style.setProperty("--glyph-index", `${index}`);
   return span;
