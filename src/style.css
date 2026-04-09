@@ -1,105 +1,325 @@
-      @font-face {
-            font-family: 'Monaspace Neon';
-            src: url('https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.000/fonts/otf/MonaspaceNeon-Regular.otf');
-            font-weight: normal;
-        }
+@font-face {
+  font-family: "Monaspace Site";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.000/fonts/otf/MonaspaceRadon-Regular.otf")
+    format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 
-        :root {
-            --bg: #030303;
-            --text: #ffffff;
-            --accent: #3a86ff;
-        }
+@font-face {
+  font-family: "Monaspace Site";
+  src: url("https://cdn.jsdelivr.net/gh/githubnext/monaspace@v1.000/fonts/otf/MonaspaceNeon-Regular.otf")
+    format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Monaspace Neon', monospace;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+:root {
+  --bg: #05070d;
+  --bg-soft: rgba(9, 14, 24, 0.86);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #f6f4ef;
+  --muted: rgba(246, 244, 239, 0.62);
+  --accent: #8f9caf;
+  --warm: #a2adbb;
+}
 
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            image-rendering: pixelated;
-        }
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Monaspace Site", monospace;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-        .content {
-            position: relative;
-            z-index: 10;
-            pointer-events: none;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 10vw;
-        }
+body {
+  position: relative;
+}
 
-        .ui-box {
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-        }
+#app,
+.site-shell {
+  width: 100%;
+  height: 100%;
+}
 
-        .tag {
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            opacity: 0.5;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
+.site-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 18% 26%,
+      rgba(112, 124, 144, 0.12),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 42%,
+      rgba(150, 158, 170, 0.09),
+      transparent 28%
+    ),
+    linear-gradient(180deg, #090c15 0%, #04050a 100%);
+}
 
-        h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin: 0 0 1.5rem 0;
-            font-weight: 700;
-            letter-spacing: -0.05em;
-        }
+.ascii-layer {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+}
 
-        p {
-            line-height: 1.7;
-            opacity: 0.7;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-        }
+.ascii-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-        .nav {
-            display: flex;
-            gap: 1.5rem;
-            pointer-events: auto;
-        }
+.ascii-grid,
+.ascii-group {
+  user-select: none;
+  filter: drop-shadow(0 0 18px rgba(167, 175, 188, 0.06));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-        .nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
+.ascii-row {
+  display: block;
+  width: max-content;
+  margin: 0;
+  white-space: pre;
+  font-family: "Monaspace Site", monospace;
+}
 
-        .nav a:hover {
-            border-color: var(--text);
-            transform: translateY(-2px);
-        }
+.ascii-art {
+  position: relative;
+}
 
-        .stats {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.6rem;
-            opacity: 0.3;
-            pointer-events: none;
-        }
+.ascii-group {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.ascii-apple {
+  left: clamp(24px, 8vw, 110px);
+  top: clamp(26px, 5vh, 54px);
+}
+
+.ascii-cloud {
+  left: clamp(24px, 8vw, 110px);
+  top: clamp(540px, 72vh, 760px);
+  opacity: 0.82;
+}
+
+.ascii-art-line {
+  color: rgba(176, 184, 196, 0.34);
+  text-shadow: 0 0 12px rgba(165, 175, 188, 0.08);
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+  font-feature-settings:
+    "liga" 0,
+    "calt" 0;
+}
+
+.ascii-glyph {
+  display: inline-block;
+  transform-origin: 50% 58%;
+  transition:
+    transform 180ms ease,
+    color 180ms ease,
+    text-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.ascii-glyph-space {
+  pointer-events: none;
+}
+
+.ascii-art-line:hover .ascii-glyph:not(.ascii-glyph-space) {
+  opacity: 0.74;
+}
+
+.ascii-glyph:not(.ascii-glyph-space):hover {
+  color: rgba(238, 244, 255, 0.98);
+  text-shadow:
+    0 0 10px rgba(214, 225, 240, 0.42),
+    0 0 22px rgba(214, 225, 240, 0.18);
+  transform: rotate(360deg) scale(1.24);
+  opacity: 1 !important;
+  z-index: 1;
+}
+
+.smoke-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.ascii-smoke {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: rgba(211, 218, 228, 0.24);
+  text-shadow: 0 0 10px rgba(210, 220, 232, 0.08);
+  will-change: transform, opacity;
+  font-variant-ligatures: none;
+  font-feature-settings:
+    "liga" 0,
+    "calt" 0;
+}
+
+.hero-layer {
+  position: relative;
+  height: 100vh;
+  z-index: 2;
+}
+
+.hero-panel,
+.status-panel {
+  position: absolute;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(
+    180deg,
+    rgba(7, 11, 20, 0.76),
+    rgba(7, 11, 20, 0.48)
+  );
+  border: 1px solid var(--panel-border);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.hero-panel {
+  left: clamp(24px, 8vw, 110px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: 20px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.status-panel {
+  right: clamp(18px, 3vw, 36px);
+  bottom: clamp(18px, 3vw, 32px);
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.hero-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-eyebrow {
+  color: rgba(169, 182, 201, 0.8);
+}
+
+.hero-title {
+  color: var(--text);
+  letter-spacing: -0.045em;
+}
+
+.hero-body {
+  color: var(--muted);
+}
+
+.hero-status {
+  color: rgba(246, 244, 239, 0.42);
+}
+
+.rendered-line {
+  white-space: pre;
+}
+
+.hero-title .rendered-line {
+  white-space: nowrap;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-top: 4px;
+  pointer-events: auto;
+}
+
+.hero-link {
+  position: relative;
+  display: block;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  padding-bottom: 4px;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.hero-link:hover,
+.hero-link:focus-visible {
+  border-color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .ascii-layer {
+    padding: 18px;
+  }
+
+  .ascii-apple {
+    left: 18px;
+    top: 18px;
+    opacity: 0.72;
+  }
+
+  .ascii-cloud {
+    left: 18px;
+    top: auto;
+    bottom: 168px;
+    opacity: 0.42;
+  }
+
+  .hero-panel {
+    left: 18px;
+    right: 18px;
+    top: auto;
+    bottom: 86px;
+    transform: none;
+    width: auto !important;
+    gap: 16px;
+  }
+
+  .hero-links {
+    gap: 14px;
+  }
+
+  .status-panel {
+    left: 18px;
+    right: auto;
+    bottom: 22px;
+  }
+}
