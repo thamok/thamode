@@ -8,7 +8,7 @@ Runtime tokens live in src/style.css: background #080b10, text #f3f5f7, muted #9
 
 ## Behavior
 
-Speed mode toggles sustained acceleration, orbit trails, streams, and periodic scatter/reformation. The inline do things action triggers one burst. Pointer proximity repels nearby characters. Accessible native buttons and links provide keyboard operation. Reduced motion suppresses continuous animation and bursts. Hidden documents stop the animation loop. Pretext prepares the glyph metrics and Salesforce wordmark once, outside the frame loop; animation uses these measured values.
+On arrival, one complete speed-mode burst plays and eases into normal motion. Turning Speed mode on keeps it active and takes precedence over the intro. Speed mode toggles sustained acceleration, orbit trails, streams, and periodic scatter/reformation. The inline do things action triggers one burst. Pointer proximity repels nearby characters. Accessible native buttons and links provide keyboard operation. Reduced motion suppresses continuous animation and bursts. Hidden documents stop the animation loop. Pretext prepares the glyph metrics and Salesforce wordmark once, outside the frame loop; animation uses these measured values.
 
 ## Intentional concept adaptations
 

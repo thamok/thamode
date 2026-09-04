@@ -28,6 +28,7 @@ Before shipping, run the validation commands above, commit the intended source c
 
 ## Interaction
 
+- On arrival, one full burst plays, then eases into normal motion.
 - Speed mode accelerates the scene and triggers recurring scatter/reform cycles.
 - Select “do things.” for a single burst.
 - Move the pointer through the artwork to repel nearby glyphs.

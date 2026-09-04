@@ -79,7 +79,11 @@ export function createMotion(canvas) {
     height = 1,
     scale = 1,
     speed = false,
-    energy = 0;
+    energy = reduced.matches ? 0 : 1;
+  // Finish the first positive scatter wave before easing into ambient motion.
+  // Animation time pauses in hidden tabs, so the introduction cannot expire unseen.
+  const introDuration = (Math.PI + 1.4) / 1.35;
+  let intro = !reduced.matches;
   let frame = 0,
     lastTime = 0,
     elapsed = 0,
@@ -118,9 +122,10 @@ export function createMotion(canvas) {
   function render(dt) {
     const motion = !reduced.matches;
     elapsed += motion ? dt : 0;
+    if (intro && elapsed >= introDuration) intro = false;
     energy = mix(
       energy,
-      speed ? 1 : 0,
+      speed || intro ? 1 : 0,
       reduced.matches ? 1 : Math.min(1, dt * 3.5),
     );
     impulse *= Math.exp(-dt * 2.1);
@@ -270,6 +275,7 @@ export function createMotion(canvas) {
     frame = 0;
     if (reduced.matches) {
       impulse = 0;
+      intro = false;
       render(0);
     } else start();
   }
@@ -284,6 +290,7 @@ export function createMotion(canvas) {
 
   return {
     setSpeed(value) {
+      intro = false; // An explicit choice always takes precedence over the intro.
       speed = Boolean(value);
       if (reduced.matches) render(0);
       else start();
